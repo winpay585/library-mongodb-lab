@@ -1,0 +1,43 @@
+Compass 导出与数据文件说明
+
+一、本目录文件
+
+1. category_stats.json   —— category_stats 集合，5 条
+2. books.json            —— books 集合，20 条，含全部字段
+3. readers.json          —— readers 集合，16 条
+4. borrow_logs.json      —— borrow_logs 集合，52 条（D1、D2 执行后）
+
+均为 UTF-8、JSON 数组格式，可直接用 Compass 的
+"Add Data → Import File" 或 mongoimport --jsonArray 导入。
+
+二、复现导出命令
+
+mongoexport --uri "mongodb://libWriter:Writer%4012345@127.0.0.1:27017/library?authSource=library" ^
+  --collection category_stats --jsonArray --pretty --out category_stats.json
+
+mongoexport --uri "mongodb://libWriter:Writer%4012345@127.0.0.1:27017/library?authSource=library" ^
+  --collection books --jsonArray --pretty --out books.json
+
+mongoexport --uri "mongodb://libWriter:Writer%4012345@127.0.0.1:27017/library?authSource=library" ^
+  --collection readers --jsonArray --pretty --out readers.json
+
+mongoexport --uri "mongodb://libWriter:Writer%4012345@127.0.0.1:27017/library?authSource=library" ^
+  --collection borrow_logs --jsonArray --pretty --out borrow_logs.json
+
+三、Compass 中查看
+
+连接 URI：
+mongodb://libWriter:Writer%4012345@127.0.0.1:27017/library?authSource=library
+
+左侧选择 library → books，在 Filter 输入：
+{price: {$gt: 80}}
+应返回 7 条，与命令行 Q1 一致。
+
+四、说明
+
+本目录的 JSON 由 mongoexport 生成；Compass 中已用界面核对
+category_stats 的 5 条文档、books 的 20 条文档以及 Q1 的 7 条结果
+（见 04_运行截图/14、15）。如果要在 Compass 内导出，可在集合页面
+点 Export Collection，选择字段和 JSON 后保存。
+mongodump 对时间序列集合的 system.buckets 需要更高权限，
+因此没有把不完整的 archive 放进交付包。
