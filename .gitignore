@@ -1,0 +1,12 @@
+_work/
+mongo_runtime/
+compass_portable/
+compass_run/
+shots_run/
+__pycache__/
+*.pyc
+*.pyo
+~$*.docx
+~$*.doc
+Thumbs.db
+.DS_Store
