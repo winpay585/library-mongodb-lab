@@ -83,4 +83,4 @@ python main.py
 1. 所有命令、数量、截图均来自本机实际运行，未使用编造数据。
 2. `borrow_logs` 是时间序列集合，`expireAfterSeconds=63072000`（2 年）；实验期间为避免 2023 年历史流水被 TTL 清理，`mongod.cfg` 中设置了 `ttlMonitorEnabled=false`。生产环境可按需开启。
 3. 报告中的截图只选了关键图，完整 15 张在 `04_运行截图`。
-4. GitHub 公开仓库地址：发布后把链接填在这里（步骤见操作指南第 7 节）。
+4. GitHub 公开仓库：https://github.com/winpay585/library-mongodb-lab
