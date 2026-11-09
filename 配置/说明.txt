@@ -1,0 +1,11 @@
+三台机器的公共配置
+
+主机名     nosql01 / nosql02 / nosql03
+hosts      192.168.121.134 nosql01
+           192.168.121.135 nosql02
+           192.168.121.136 nosql03
+项目目录   /data/lib，下分 log、conf、key、tmp，以及各实例的 dbPath
+数据库目录 /data/lib/standalone（单机）、rs1 rs2 rs3（副本集）、
+           cfg1 cfg2 cfg3（配置服务器）、shard1 shard2（分片）
+keyfile    /data/lib/key/mongo.key，64 个十六进制字符，三台一致，权限 400
+其他       关掉 firewalld，SELinux 设为 permissive
