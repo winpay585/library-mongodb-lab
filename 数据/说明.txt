@@ -1,0 +1,12 @@
+导入用的源数据
+
+books.txt        50 本图书，每行一个 JSON 对象，字段包括 isbn、title、author、
+                 publisher、category、price、stock、rating、publish_date、
+                 borrow_count、location、tags、ebook_name
+readers.txt      30 位读者，字段包括 card_no、name、college、email、phone、
+                 level、register_date、fav_categories
+borrow_logs.txt  3000 条借阅记录，字段包括 borrow_date、reader_card、book_isbn、
+                 status、duration_days、return_date
+gridfs/          6 个文件，3 本电子书 PDF 和 3 张封面 PNG，用 mongofiles 存进 GridFS
+
+导入方式用 mongoimport --jsonArray --drop，注意先导入再建索引和分片。
