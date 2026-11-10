@@ -17,11 +17,11 @@
 ## 二、目录
 
 - 文档/    技术文档，Word 和 PDF 各一份
-- 脚本/    各阶段的部署、演练、验收脚本，按 01、02 的顺序跑
-- 配置/    主机名与 hosts、mongod 配置、keyfile 的说明
+- 脚本/    数据库这一层的脚本：建索引、统计查询、账号权限、GridFS、副本集、分片、验收
+- 配置/    三台机器的主机名、hosts、目录划分、keyfile 做法
 - 截图/    运行截图
 - 数据/    导入用的源数据，以及 GridFS 用的电子书和封面
-- 日志/    每个阶段的完整命令输出，按编号对应脚本
+- 日志/    部署与排错时的命令输出，按执行先后编号
 
 ## 三、机器与端口
 
@@ -32,15 +32,34 @@
 
 ## 四、怎么跑
 
-1. 先把 脚本/ssh工具.py 开头的 IP 和密码改成自己的环境。
-2. 按编号顺序执行 01 到 24：01 初始化三台机器，02 到 05 是单机阶段，06 到 11 是副本集与故障转移，
-   12 到 19 是分片集群，20 是总验收，21 到 24 是收尾与重启后拉起。
-3. 25 是用虚拟机控制台截图的小脚本，可以不要。
+前置：三台机器按 `配置/说明.txt` 建好目录、写好 hosts，各实例用对应的 mongod 配置起起来
+（单机 27017、副本集 27018、配置服务器 27019、分片 27020/27021、mongos 27022）。
+脚本只管数据库里的活，不装机、不连 SSH。
+
+| 顺序 | 命令 | 干什么 |
+| --- | --- | --- |
+| 1 | `bash 01_导入数据.sh 27017` | 三个集合导进 library（认证没开就不用带账号） |
+| 2 | `mongosh --port 27017 -f 02_建索引.js` | 建 12 个业务索引 |
+| 3 | `mongosh --port 27017 -f 03_检索与统计.js` | 五组统计查询 |
+| 4 | `mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin -f 04_账号与角色.js` | 四个账号 + 自定义角色 |
+| 5 | `bash 05_权限验证.sh` | 三类账号的权限边界 |
+| 6 | `bash 06_电子书存取.sh` | 6 个文件进 GridFS 并比对 MD5 |
+| 7 | `mongosh --port 27018 -f 07_副本集搭建.js` | 组 rs_lib（一个节点执行一次） |
+| 8 | `bash 08_故障转移演练.sh` | 在当前主节点上测切换时间 |
+| 9 | `mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin -f 09_分片集群搭建.js` | 挂分片、开分片、定分片键 |
+| 10 | `mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin -f 10_分片与块迁移.js` | 切块、看分布、必要时 moveChunk |
+| 11 | `mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin -f 11_路由与执行计划.js` | 查询落点与扫描量 |
+| 12 | `bash 12_集群验收.sh` | 一次打出三套环境的指标 |
+
+除 01、05、06、08、12 是 shell（要用 mongoimport、mongofiles、kill、ss），其余都是 mongosh 脚本。
+每个脚本开头都写了在哪台机器跑、要不要带账号；重复执行不会破坏已有数据。
+01 的 `--drop` 会清空集合，所以它要排在 02 之前。
 
 ## 五、账号
 
 platform_admin（admin 库，root 权限）、lib_admin（library 库，dbOwner）、
 lib_editor（library 库，只给增删改查）、lib_reader（library 库，只读）。
+四个账号的密码见脚本 04。
 
 ## 六、说明
 
