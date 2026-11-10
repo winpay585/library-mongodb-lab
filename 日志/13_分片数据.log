@@ -1,0 +1,113 @@
+[nosql01] $ mongosh 'mongodb://127.0.0.1:27022/?directConnection=true' --quiet /data/lib/tmp/sh_first.js
+platform_admin 已创建（mongos localhost 例外）
+[exit 0]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_users.js
+lib_admin 已创建
+lib_editor 已创建
+lib_reader 已创建
+账号：lib_admin, lib_editor, lib_reader
+[exit 0]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_enable.js
+{
+  shardAdded: 'shard1',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311552, i: 19 }),
+    signature: {
+      hash: Binary.createFromBase64('oOoKk08XIhDz357OVnZ9zMb/yWY=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311552, i: 19 })
+}
+{
+  shardAdded: 'shard2',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311554, i: 23 }),
+    signature: {
+      hash: Binary.createFromBase64('1qadyK6SH/qgG8z0HLdX+kf6gpU=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311554, i: 17 })
+}
+已启用分片的数据库：{"ok":1,"$clusterTime":{"clusterTime":{"$timestamp":"7706509447559905284"},"signature":{"hash":"EpT+44KfoozFgdfucZMzwSZcw9M=","keyId":{"high":1794311445,"low":23,"unsigned":false}}},"operationTime":{"$timestamp":"7706509447559905281"}}
+{
+  collectionsharded: 'library.borrow_logs',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311557, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('2895MJ8plKc7z2aZxOBIiWbPElI=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311557, i: 1 })
+}
+{
+  collectionsharded: 'library.books',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311559, i: 20 }),
+    signature: {
+      hash: Binary.createFromBase64('aDFXj4Dn4BJLcP0fj6VESSRqL5M=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311559, i: 19 })
+}
+分片状态：["shard1=shard1rs/nosql01:27020,nosql02:27020","shard2=shard2rs/nosql02:27021,nosql03:27021"]
+[exit 0]
+
+[nosql01] $ mongoimport --port 27022 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection books --file /data/lib/tmp/data/books.txt --jsonArray --drop
+2026-11-10T19:52:40.435+0800	connected to: mongodb://localhost:27022/
+2026-11-10T19:52:40.440+0800	dropping: `library.books`
+2026-11-10T19:52:41.648+0800	50 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongoimport --port 27022 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection readers --file /data/lib/tmp/data/readers.txt --jsonArray --drop
+2026-11-10T19:52:42.327+0800	connected to: mongodb://localhost:27022/
+2026-11-10T19:52:42.328+0800	dropping: `library.readers`
+2026-11-10T19:52:43.089+0800	30 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongoimport --port 27022 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection borrow_logs --file /data/lib/tmp/data/borrow_logs.txt --jsonArray --drop
+2026-11-10T19:52:44.314+0800	connected to: mongodb://localhost:27022/
+2026-11-10T19:52:44.315+0800	dropping: `library.borrow_logs`
+2026-11-10T19:52:45.854+0800	3000 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongosh --port 27020 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("books="+d.books.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments())'
+MongoServerError: Authentication failed.
+[exit 1]
+
+[nosql03] $ mongosh --port 27021 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("books="+d.books.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments())'
+MongoServerError: Authentication failed.
+[exit 1]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_split.js
+split 跳过 -6917529027641081856: NamespaceNotSharded
+split 跳过 -4611686018427387904: NamespaceNotSharded
+split 跳过 -2305843009213693952: NamespaceNotSharded
+split 跳过 0: NamespaceNotSharded
+split 跳过 2305843009213693952: NamespaceNotSharded
+split 跳过 4611686018427387904: NamespaceNotSharded
+split 跳过 6917529027641081856: NamespaceNotSharded
+已切分并启动均衡器
+[exit 0]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_dist.js
+== 分片分布 ==
+MongoshInvalidInputError: [SHAPI-10001] Collection borrow_logs is not sharded
+[exit 1]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_status.js
+TypeError: Cannot read properties of undefined (reading 'forEach')
+[exit 1]
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getSiblingDB("library").borrow_logs.countDocuments()'
+3000
+[exit 0]

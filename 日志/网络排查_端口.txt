@@ -1,0 +1,27 @@
+﻿=== C:\Users\tttt\Documents\Virtual Machines\NOSQL01\NOSQL01.vmx
+running
+
+=== C:\Users\tttt\Documents\Virtual Machines\NOSQL02\NOSQL02.vmx
+running
+
+=== C:\Users\tttt\Documents\Virtual Machines\NOSQL03\NOSQL03.vmx
+running
+
+
+InterfaceAlias IPAddress       PrefixLength
+-------------- ---------       ------------
+Radmin VPN     26.170.98.106              8
+本地连接* 2        169.254.186.84            16
+本地连接* 1        169.254.130.251           16
+以太网            169.254.141.74            16
+WLAN           192.168.1.6               24
+
+
+
+
+InterfaceAlias NextHop    
+-------------- -------    
+WLAN           192.168.1.1
+Radmin VPN     26.0.0.1   
+
+

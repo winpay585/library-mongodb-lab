@@ -1,0 +1,81 @@
+$ cd /data/lib/tmp/data/gridfs_files && for f in ebook_1.pdf ebook_2.pdf ebook_3.pdf cover_1.png cover_2.png cover_3.png; do mongofiles --port 27017 -u lib_admin -p lib2026pwd --authenticationDatabase library -d library put $f; done; echo
+2026-11-10T19:35:22.079+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.079+0800	adding gridFile: `ebook_1.pdf`
+
+2026-11-10T19:35:22.170+0800	added gridFile: `ebook_1.pdf`
+
+2026-11-10T19:35:22.206+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.206+0800	adding gridFile: `ebook_2.pdf`
+
+2026-11-10T19:35:22.216+0800	added gridFile: `ebook_2.pdf`
+
+2026-11-10T19:35:22.252+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.253+0800	adding gridFile: `ebook_3.pdf`
+
+2026-11-10T19:35:22.262+0800	added gridFile: `ebook_3.pdf`
+
+2026-11-10T19:35:22.310+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.311+0800	adding gridFile: `cover_1.png`
+
+2026-11-10T19:35:22.321+0800	added gridFile: `cover_1.png`
+
+2026-11-10T19:35:22.361+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.361+0800	adding gridFile: `cover_2.png`
+
+2026-11-10T19:35:22.369+0800	added gridFile: `cover_2.png`
+
+2026-11-10T19:35:22.408+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:22.408+0800	adding gridFile: `cover_3.png`
+
+2026-11-10T19:35:22.418+0800	added gridFile: `cover_3.png`
+[exit 0]
+
+$ cd /data/lib/tmp && printf '%s\n' "db.getSiblingDB('library').fs.files.find({}, {filename:1, length:1, chunkSize:1, _id:0}).forEach(f => print(f.filename, f.length, f.chunkSize))" > fslist.js && mongosh --port 27017 -u lib_admin -p lib2026pwd --authenticationDatabase library --quiet /data/lib/tmp/fslist.js
+ebook_1.pdf Long('39837') 261120
+ebook_2.pdf Long('38524') 261120
+ebook_3.pdf Long('37004') 261120
+cover_1.png Long('23611') 261120
+cover_2.png Long('26053') 261120
+cover_3.png Long('15171') 261120
+[exit 0]
+
+$ rm -rf /data/lib/out/gridfs_dl; mkdir -p /data/lib/out/gridfs_dl; cd /data/lib/out/gridfs_dl && for f in ebook_1.pdf ebook_2.pdf ebook_3.pdf cover_1.png cover_2.png cover_3.png; do mongofiles --port 27017 -u lib_admin -p lib2026pwd --authenticationDatabase library -d library get $f >/dev/null; done; ls -l; md5sum * | sort -k2
+总计 188
+-rw-r--r--. 1 root root 23611 11月10日 19:35 cover_1.png
+-rw-r--r--. 1 root root 26053 11月10日 19:35 cover_2.png
+-rw-r--r--. 1 root root 15171 11月10日 19:35 cover_3.png
+-rw-r--r--. 1 root root 39837 11月10日 19:35 ebook_1.pdf
+-rw-r--r--. 1 root root 38524 11月10日 19:35 ebook_2.pdf
+-rw-r--r--. 1 root root 37004 11月10日 19:35 ebook_3.pdf
+7e44bcff0206b927fbb63cc5340861cd  cover_1.png
+eb16d7458ed9d95193e1d2f7bfeddec6  cover_2.png
+8e4d140cd5674f7da8d86f6efbfe88fa  cover_3.png
+f818f1a754c2fabfdddf96f86294b9b4  ebook_1.pdf
+c86c3991f2b1797d93839034f1a06ba9  ebook_2.pdf
+3536df7adad16f5e9894d6e37f55ebd0  ebook_3.pdf
+2026-11-10T19:35:24.959+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:24.967+0800	finished writing to `ebook_1.pdf`
+
+2026-11-10T19:35:25.043+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:25.049+0800	finished writing to `ebook_2.pdf`
+
+2026-11-10T19:35:25.102+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:25.109+0800	finished writing to `ebook_3.pdf`
+
+2026-11-10T19:35:25.191+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:25.200+0800	finished writing to `cover_1.png`
+
+2026-11-10T19:35:25.272+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:25.281+0800	finished writing to `cover_2.png`
+
+2026-11-10T19:35:25.356+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:35:25.362+0800	finished writing to `cover_3.png`
+[exit 0]
+
+$ cd /data/lib/tmp/data/gridfs_files && md5sum *.pdf *.png | awk '{print $1}' | sort > /tmp/src.txt; cd /data/lib/out/gridfs_dl && md5sum * | awk '{print $1}' | sort > /tmp/dst.txt; diff /tmp/src.txt /tmp/dst.txt && echo 'GridFS 6 个文件字节与 MD5 与源文件逐一一致'
+GridFS 6 个文件字节与 MD5 与源文件逐一一致
+[exit 0]
+
+$ mongosh --port 27017 -u lib_admin -p lib2026pwd --authenticationDatabase library --quiet --eval 'const d=db.getSiblingDB("library");print("fs.files="+d.fs.files.countDocuments()+" fs.chunks="+d.fs.chunks.countDocuments()+" 总字节="+d.fs.chunks.aggregate([{$group:{_id:null,n:{$sum:"$data.length"}}}]).toArray()[0].n)'
+fs.files=6 fs.chunks=6 总字节=0
+[exit 0]

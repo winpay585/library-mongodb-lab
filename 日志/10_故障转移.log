@@ -1,0 +1,77 @@
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/rs_index.js
+索引已建立
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("books="+d.books.getIndexes().length, "readers="+d.readers.getIndexes().length, "borrow_logs="+d.borrow_logs.getIndexes().length)'
+books=5 readers=4 borrow_logs=6
+[exit 0]
+
+[nosql02] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("books="+d.books.getIndexes().length, "readers="+d.readers.getIndexes().length, "borrow_logs="+d.borrow_logs.getIndexes().length)'
+books=5 readers=4 borrow_logs=6
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("books="+d.books.getIndexes().length, "readers="+d.readers.getIndexes().length, "borrow_logs="+d.borrow_logs.getIndexes().length)'
+books=5 readers=4 borrow_logs=6
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'print(db.hello().isWritablePrimary)'
+true
+[exit 0]
+
+>>> 故障转移前主节点：nosql01
+[nosql01] $ ss -lntp | grep 27018 | grep -o 'pid=[0-9]*' | cut -d= -f2
+6209
+[exit 0]
+
+>>> 主节点 mongod pid = 6209
+[nosql01] $ kill -9 6209
+
+[exit 0]
+
+>>> 新主节点：nosql03，从杀进程到选出新主耗时 13.57 秒
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getSiblingDB("library").books.insertOne({isbn:"failover-probe",title:"故障转移写入探针",category:"测试",price:0,stock:1});print("新主写入成功，books=" + db.getSiblingDB("library").books.countDocuments())'
+新主写入成功，books=51
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 (not reachable/healthy) 0
+nosql02:27018 SECONDARY 1
+nosql03:27018 PRIMARY 1
+[exit 0]
+
+[nosql01] $ mongod --config /data/lib/conf/rs1.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 7968
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'print("原主节点当前角色：" + (db.hello().isWritablePrimary ? "PRIMARY" : "SECONDARY"));print("books=" + db.getSiblingDB("library").books.countDocuments())'
+原主节点当前角色：PRIMARY
+books=51
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 PRIMARY 1
+nosql02:27018 SECONDARY 1
+nosql03:27018 SECONDARY 1
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.printSecondaryReplicationInfo()'
+source: nosql02:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:48:48 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+---
+source: nosql03:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:48:48 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getSiblingDB("library").books.deleteMany({isbn:"failover-probe"});print("探针已清理，books=" + db.getSiblingDB("library").books.countDocuments())'
+MongoServerError: not primary
+[exit 1]
+
+>>> 恢复耗时记录：26 秒（含 10 秒等待）

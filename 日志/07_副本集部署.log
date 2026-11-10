@@ -1,0 +1,106 @@
+[192.168.121.134] $ rm -rf /data/lib/rs1; mkdir -p /data/lib/rs1; mongod --config /data/lib/conf/rs1.conf || tail -n 20 /data/lib/log/rs1.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 6209
+child process started successfully, parent exiting
+[exit 0]
+
+[192.168.121.135] $ rm -rf /data/lib/rs2; mkdir -p /data/lib/rs2; mongod --config /data/lib/conf/rs2.conf || tail -n 20 /data/lib/log/rs2.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 3198
+child process started successfully, parent exiting
+[exit 0]
+
+[192.168.121.136] $ rm -rf /data/lib/rs3; mkdir -p /data/lib/rs3; mongod --config /data/lib/conf/rs3.conf || tail -n 20 /data/lib/log/rs3.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 3193
+child process started successfully, parent exiting
+[exit 0]
+
+[192.168.121.134] $ ss -lntp | grep 27018
+LISTEN 0      4096         0.0.0.0:27018      0.0.0.0:*    users:(("mongod",pid=6209,fd=10))
+[exit 0]
+
+[192.168.121.135] $ ss -lntp | grep 27018
+LISTEN 0      4096         0.0.0.0:27018      0.0.0.0:*    users:(("mongod",pid=3198,fd=10))
+[exit 0]
+
+[192.168.121.136] $ ss -lntp | grep 27018
+LISTEN 0      4096         0.0.0.0:27018      0.0.0.0:*    users:(("mongod",pid=3193,fd=10))
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 --quiet --eval "rs.initiate({_id:'rs_lib',members:[{_id:0,host:'nosql01:27018',priority:2},{_id:1,host:'nosql02:27018',priority:1},{_id:2,host:'nosql03:27018',priority:1}]})"
+{ ok: 1 }
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 SECONDARY 1
+nosql02:27018 SECONDARY 1
+nosql03:27018 SECONDARY 1
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 --quiet --eval 'print("PRIMARY=" + db.hello().primary, " isWritablePrimary=" + db.hello().isWritablePrimary)'
+PRIMARY=nosql01:27018  isWritablePrimary=true
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 --quiet /data/lib/tmp/rs_users.js
+MongoServerError: Command createUser requires authentication
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection books --file /data/lib/tmp/data/books.txt --jsonArray --drop
+2026-11-10T19:45:02.240+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection readers --file /data/lib/tmp/data/readers.txt --jsonArray --drop
+2026-11-10T19:45:02.986+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection borrow_logs --file /data/lib/tmp/data/borrow_logs.txt --jsonArray --drop
+2026-11-10T19:45:03.791+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");["books","readers","borrow_logs"].forEach(c=>print(c,d[c].countDocuments()))'
+books 0
+readers 0
+borrow_logs 0
+[exit 0]
+
+[nosql02] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getMongo().setReadPref("secondary");const d=db.getSiblingDB("library");["books","readers","borrow_logs"].forEach(c=>print(c,d[c].countDocuments()))'
+books 0
+readers 0
+borrow_logs 0
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getMongo().setReadPref("secondary");const d=db.getSiblingDB("library");const s=d.books.countDocuments({}, {hint:{"$natural":1}});print("nosql03 读到 books=" + s)'
+nosql03 读到 books=0
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'printjson(rs.printReplicationInfo()); printjson(rs.printSecondaryReplicationInfo())'
+actual oplog size
+'2044.387451171875 MB'
+---
+configured oplog size
+'2044.387451171875 MB'
+---
+log length start to end
+'32 secs (0.01 hrs)'
+---
+oplog first event time
+'Tue Nov 10 2026 19:44:44 GMT+0800 (中国标准时间)'
+---
+oplog last event time
+'Tue Nov 10 2026 19:45:16 GMT+0800 (中国标准时间)'
+---
+now
+'Tue Nov 10 2026 19:45:17 GMT+0800 (中国标准时间)'
+source: nosql02:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:45:01 GMT+0800 (中国标准时间)',
+  replLag: '15 secs (0 hrs) behind the primary '
+}
+---
+source: nosql03:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:45:01 GMT+0800 (中国标准时间)',
+  replLag: '15 secs (0 hrs) behind the primary '
+}
+[exit 0]

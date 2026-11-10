@@ -1,0 +1,12 @@
+== NOSQL01 客户机恢复静态 192.168.121.134
+== NOSQL02 客户机恢复静态 192.168.121.135
+== NOSQL03 客户机恢复静态 192.168.121.136
+== NOSQL01 关机
+== NOSQL02 关机
+== NOSQL03 关机
+== NOSQL01 vmx 已回退: ethernet0.connectionType = "nat"
+== NOSQL02 vmx 已回退: ethernet0.connectionType = "nat"
+== NOSQL03 vmx 已回退: ethernet0.connectionType = "nat"
+192.168.121.135 port22=True
+192.168.121.134 port22=True
+192.168.121.136 port22=True

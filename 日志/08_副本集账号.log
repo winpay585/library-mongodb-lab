@@ -1,0 +1,59 @@
+[nosql01] $ mongosh 'mongodb://127.0.0.1:27018/?directConnection=true' --quiet /data/lib/tmp/rs_users.js
+MongoServerError: Command createUser requires authentication
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection books --file /data/lib/tmp/data/books.txt --jsonArray --drop
+2026-11-10T19:46:24.308+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection readers --file /data/lib/tmp/data/readers.txt --jsonArray --drop
+2026-11-10T19:46:24.896+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection borrow_logs --file /data/lib/tmp/data/borrow_logs.txt --jsonArray --drop
+2026-11-10T19:46:25.516+0800	error connecting to host: failed to connect to mongodb://localhost:27018/: connection() error occurred during connection handshake: auth error: sasl conversation error: unable to authenticate using mechanism "SCRAM-SHA-1": (AuthenticationFailed) Authentication failed.
+[exit 1]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --quiet /data/lib/tmp/rs_check.js
+本节点：nosql01:27018  角色：PRIMARY
+  books = 0
+  readers = 0
+  borrow_logs = 0
+MongoServerError: ns does not exist: library.books
+[exit 1]
+
+[nosql02] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --quiet /data/lib/tmp/rs_check.js
+本节点：nosql02:27018  角色：SECONDARY
+  books = 0
+  readers = 0
+  borrow_logs = 0
+MongoServerError: ns does not exist: library.books
+[exit 1]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --quiet /data/lib/tmp/rs_check.js
+本节点：nosql03:27018  角色：SECONDARY
+  books = 0
+  readers = 0
+  borrow_logs = 0
+MongoServerError: ns does not exist: library.books
+[exit 1]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 PRIMARY 1
+nosql02:27018 SECONDARY 1
+nosql03:27018 SECONDARY 1
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.printSecondaryReplicationInfo()'
+source: nosql02:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:46:36 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+---
+source: nosql03:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:46:36 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+[exit 0]

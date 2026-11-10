@@ -1,0 +1,1 @@
+MongoServerError: Please create an index that starts with the proposed shard key before sharding the collection. 

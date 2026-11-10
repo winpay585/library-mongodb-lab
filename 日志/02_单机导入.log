@@ -1,0 +1,78 @@
+$ setenforce 0
+Permissive
+SELINUX=permissive
+[exit 0]
+
+sftp put books.txt -> /data/lib/tmp/data/books.txt
+sftp put borrow_logs.txt -> /data/lib/tmp/data/borrow_logs.txt
+sftp put readers.txt -> /data/lib/tmp/data/readers.txt
+
+$ ls -l /data/lib/conf/standalone.conf /data/lib/tmp/data
+-rw-r--r--. 1 root root 301 11月10日 19:30 /data/lib/conf/standalone.conf
+
+/data/lib/tmp/data:
+总计 624
+-rw-r--r--. 1 root root  21418 11月10日 19:30 books.txt
+-rw-r--r--. 1 root root 602528 11月10日 19:30 borrow_logs.txt
+-rw-r--r--. 1 root root   7935 11月10日 19:30 readers.txt
+[exit 0]
+
+$ rm -rf /data/lib/standalone/*; mongod --config /data/lib/conf/standalone.conf
+about to fork child process, waiting until server is ready for connections.
+forked process: 2723
+child process started successfully, parent exiting
+[exit 0]
+
+$ ss -lntp | grep 27017
+LISTEN 0      4096         0.0.0.0:27017      0.0.0.0:*    users:(("mongod",pid=2723,fd=10))
+[exit 0]
+
+$ mongosh --port 27017 --quiet --eval 'db.runCommand({ping:1})'
+{ ok: 1 }
+[exit 0]
+
+$ mongoimport --port 27017 --db library --collection books --file /data/lib/tmp/data/books.txt --jsonArray --drop
+2026-11-10T19:30:53.580+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:30:53.581+0800	dropping: `library.books`
+2026-11-10T19:30:53.600+0800	50 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+$ mongoimport --port 27017 --db library --collection readers --file /data/lib/tmp/data/readers.txt --jsonArray --drop
+2026-11-10T19:30:53.781+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:30:53.782+0800	dropping: `library.readers`
+2026-11-10T19:30:53.802+0800	30 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+$ mongoimport --port 27017 --db library --collection borrow_logs --file /data/lib/tmp/data/borrow_logs.txt --jsonArray --drop
+2026-11-10T19:30:53.990+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:30:53.994+0800	dropping: `library.borrow_logs`
+2026-11-10T19:30:54.190+0800	3000 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+$ mongosh --port 27017 --quiet --eval 'db.getSiblingDB("library").getCollectionNames().forEach(c => print(c, db.getSiblingDB("library")[c].countDocuments()))'
+borrow_logs 3000
+readers 30
+books 50
+[exit 0]
+
+$ mongosh --port 27017 --quiet /data/lib/tmp/index.js
+MongoServerError: Error in specification { name: "category_1_name_idx_category", key: { category: 1, name: "idx_category" } } :: caused by :: Unknown index plugin 'idx_category'
+[exit 1]
+
+$ mongoexport --port 27017 --db library --collection books --jsonArray --out /data/lib/out/library.books.json && wc -c /data/lib/out/library.books.json
+19396 /data/lib/out/library.books.json
+2026-11-10T19:31:00.035+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:31:00.056+0800	exported 50 records
+[exit 0]
+
+$ mongoexport --port 27017 --db library --collection readers --jsonArray --out /data/lib/out/library.readers.json && wc -c /data/lib/out/library.readers.json
+7815 /data/lib/out/library.readers.json
+2026-11-10T19:31:00.225+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:31:00.232+0800	exported 30 records
+[exit 0]
+
+$ mongoexport --port 27017 --db library --collection borrow_logs --jsonArray --out /data/lib/out/library.borrow_logs.json && wc -c /data/lib/out/library.borrow_logs.json
+647960 /data/lib/out/library.borrow_logs.json
+2026-11-10T19:31:00.430+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:31:00.593+0800	exported 3000 records
+[exit 0]

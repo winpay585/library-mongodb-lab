@@ -1,0 +1,20 @@
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/m_move.js
+borrow_logs 现有块数：8
+  迁移第 1 块 → OK
+  迁移第 2 块 → OK
+  迁移第 3 块 → OK
+  迁移第 4 块 → OK
+books 现有块数：2
+  books 第 1 块迁移 → OK
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/m_after.js
+borrow_logs 块分布: [{"_id":"shard1","n":4},{"_id":"shard2","n":4}]
+books 块分布: [{"_id":"shard1","n":1},{"_id":"shard2","n":1}]
+--- getShardDistribution ---
+TypeError: Cannot read properties of undefined (reading 'docs')
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/m_route.js
+① 带分片键 reader_card=R20240001 → 命中 shard1
+② 不带分片键 status=逾期       → 命中 shard1,shard2
+③ 带分片键 isbn=9787115428028 → 命中 shard1
+④ 全表扫描（无分片键范围）     → 命中 shard1,shard2

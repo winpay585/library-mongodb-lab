@@ -1,0 +1,57 @@
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_idx.js
+books 索引=6 readers=4 borrow_logs=6
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_shard.js
+{
+  collectionsharded: 'library.borrow_logs',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311761, i: 22 }),
+    signature: {
+      hash: Binary.createFromBase64('p1Dwg2HKkQAJt9ivEWMxYkvJQ5U=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311761, i: 22 })
+}
+{
+  collectionsharded: 'library.books',
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794311761, i: 63 }),
+    signature: {
+      hash: Binary.createFromBase64('p1Dwg2HKkQAJt9ivEWMxYkvJQ5U=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794311761, i: 63 })
+}
+分片集合：[{"_id":"config.system.sessions","key":{"_id":1}},{"_id":"library.borrow_logs","key":{"reader_card":"hashed"}},{"_id":"library.books","key":{"isbn":"hashed"}}]
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_split.js
+borrow_logs 新切出块数：7
+books 切块 ok=1
+均衡器已启动
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_dist.js
+== borrow_logs 分布 ==
+TypeError: Cannot read properties of undefined (reading 'docs')
+[exit 1]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_route.js
+按分片键查 reader_card=R20240001  → 命中分片: shard1
+不按分片键查 status=逾期          → 命中分片: shard1
+按分片键查 isbn=9787115428028    → 命中分片: shard1
+插入一条并按 isbn 回查：
+  查到 → 命中分片: shard1
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/f_status.js
+分片成员：
+  shard1 => shard1rs/nosql01:27020,nosql02:27020
+  shard2 => shard2rs/nosql02:27021,nosql03:27021
+library 主分片：shard1
+[exit 0]

@@ -1,0 +1,48 @@
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/bal.js
+getBalancerState=true
+isBalancerRunning=[object Object]
+{
+  mode: 'full',
+  inBalancerRound: false,
+  numBalancerRounds: Long('74'),
+  term: Long('1'),
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1794312190, i: 1 }),
+    signature: {
+      hash: Binary.createFromBase64('pnG/Ps7C/GZzZoPLQWVshwbnHG0=', 0),
+      keyId: Long('7706508975113502743')
+    }
+  },
+  operationTime: Timestamp({ t: 1794312190, i: 1 })
+}
+
+$ grep -iE 'balanc|migrat|moveChunk' /data/lib/log/mongos.log | tail -n 25
+{"t":{"$date":"2026-11-10T20:02:36.836+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn270","msg":"Connection ended","attr":{"remote":"127.0.0.1:41260","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"a0389238-1013-44d8-8345-0b7985335402"}},"connectionId":270,"local":"127.0.0.1:27022","connectionCount":0}}
+{"t":{"$date":"2026-11-10T20:02:39.308+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:41272","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"459e3bf6-ff82-49fd-b989-ce98967e449b"}},"connectionId":272,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:02:39.378+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:41274","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"ca5f61de-8be9-4ae6-b0f2-71bbe877e20b"}},"connectionId":273,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:02:39.742+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:41286","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"d4b923eb-2269-4286-ae71-bfb6abd46235"}},"connectionId":274,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:02:39.743+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:41296","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"43de1b0d-3252-43a5-8c19-1d76b3cbe21e"}},"connectionId":275,"local":"127.0.0.1:27022","connectionCount":4}}
+{"t":{"$date":"2026-11-10T20:02:40.408+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn272","msg":"Connection ended","attr":{"remote":"127.0.0.1:41272","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"459e3bf6-ff82-49fd-b989-ce98967e449b"}},"connectionId":272,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:02:40.408+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn274","msg":"Connection ended","attr":{"remote":"127.0.0.1:41286","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"d4b923eb-2269-4286-ae71-bfb6abd46235"}},"connectionId":274,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:02:40.409+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn275","msg":"Connection ended","attr":{"remote":"127.0.0.1:41296","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"43de1b0d-3252-43a5-8c19-1d76b3cbe21e"}},"connectionId":275,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:02:40.411+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn273","msg":"Connection ended","attr":{"remote":"127.0.0.1:41274","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"ca5f61de-8be9-4ae6-b0f2-71bbe877e20b"}},"connectionId":273,"local":"127.0.0.1:27022","connectionCount":0}}
+{"t":{"$date":"2026-11-10T20:02:43.278+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53378","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"c6a6b6ac-a56d-43d7-94ed-29bf3e43614c"}},"connectionId":276,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:02:43.305+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53392","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"a45c1635-d1f2-43a3-915f-8aec95ed6dab"}},"connectionId":277,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:02:43.670+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53396","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"c0703c5b-3b92-4bff-a413-b99a7ba559fb"}},"connectionId":278,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:02:43.670+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:53410","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"1f6b7380-9c49-4579-ba25-209c77726950"}},"connectionId":279,"local":"127.0.0.1:27022","connectionCount":4}}
+{"t":{"$date":"2026-11-10T20:02:43.969+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn276","msg":"Connection ended","attr":{"remote":"127.0.0.1:53378","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"c6a6b6ac-a56d-43d7-94ed-29bf3e43614c"}},"connectionId":276,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:02:43.971+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn279","msg":"Connection ended","attr":{"remote":"127.0.0.1:53410","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"1f6b7380-9c49-4579-ba25-209c77726950"}},"connectionId":279,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:02:43.971+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn277","msg":"Connection ended","attr":{"remote":"127.0.0.1:53392","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"a45c1635-d1f2-43a3-915f-8aec95ed6dab"}},"connectionId":277,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:02:43.972+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn278","msg":"Connection ended","attr":{"remote":"127.0.0.1:53396","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"c0703c5b-3b92-4bff-a413-b99a7ba559fb"}},"connectionId":278,"local":"127.0.0.1:27022","connectionCount":0}}
+{"t":{"$date":"2026-11-10T20:03:09.217+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:49242","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"1c2895d9-bbcf-4059-b005-8d795e60d299"}},"connectionId":280,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:03:09.245+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:49254","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"bb97e68e-d630-49bf-aa37-a697018aa276"}},"connectionId":281,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:03:09.686+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:49258","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"d2ebe35c-37ef-480a-886a-caaca9e1182a"}},"connectionId":282,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:03:09.686+08:00"},"s":"I",  "c":"NETWORK",  "id":22943,   "svc":"-", "ctx":"listener","msg":"Connection accepted","attr":{"remote":"127.0.0.1:49264","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"2e9c0383-c0ca-4adc-a2d2-d68165d659d7"}},"connectionId":283,"local":"127.0.0.1:27022","connectionCount":4}}
+{"t":{"$date":"2026-11-10T20:03:10.227+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn280","msg":"Connection ended","attr":{"remote":"127.0.0.1:49242","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"1c2895d9-bbcf-4059-b005-8d795e60d299"}},"connectionId":280,"local":"127.0.0.1:27022","connectionCount":3}}
+{"t":{"$date":"2026-11-10T20:03:10.230+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn283","msg":"Connection ended","attr":{"remote":"127.0.0.1:49264","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"2e9c0383-c0ca-4adc-a2d2-d68165d659d7"}},"connectionId":283,"local":"127.0.0.1:27022","connectionCount":2}}
+{"t":{"$date":"2026-11-10T20:03:10.230+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn282","msg":"Connection ended","attr":{"remote":"127.0.0.1:49258","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"d2ebe35c-37ef-480a-886a-caaca9e1182a"}},"connectionId":282,"local":"127.0.0.1:27022","connectionCount":1}}
+{"t":{"$date":"2026-11-10T20:03:10.231+08:00"},"s":"I",  "c":"NETWORK",  "id":22944,   "svc":"R", "ctx":"conn281","msg":"Connection ended","attr":{"remote":"127.0.0.1:49254","isLoadBalanced":false,"isProxyUnixSock":false,"uuid":{"uuid":{"$uuid":"bb97e68e-d630-49bf-aa37-a697018aa276"}},"connectionId":281,"local":"127.0.0.1:27022","connectionCount":0}}
+
+$ grep -icE 'error|abort' /data/lib/log/mongos.log
+14

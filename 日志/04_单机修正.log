@@ -1,0 +1,147 @@
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/stats2.js
+== Q1 分类统计（图书数 / 均价 / 总借阅） ==
+{"分类":"计算机","图书数":15,"均价":89.53,"总借阅":2049}
+{"分类":"文学","图书数":12,"均价":47.02,"总借阅":1744}
+{"分类":"经济管理","图书数":7,"均价":90.86,"总借阅":617}
+{"分类":"数学","图书数":6,"均价":40.67,"总借阅":1086}
+{"分类":"历史","图书数":5,"均价":95.6,"总借阅":638}
+{"分类":"外语","图书数":5,"均价":59,"总借阅":653}
+== Q2 学院读者数 Top5 ==
+{"_id":"经济管理学院","人数":5}
+{"_id":"计算机学院","人数":5}
+{"_id":"外国语学院","人数":4}
+{"_id":"管理学院","人数":4}
+{"_id":"数学与统计学院","人数":4}
+== Q3 月度借阅（按月聚合） ==
+月份总数: 36
+首月 2023-01 = 86；末月 2025-12 = 76
+全期合计: 3000
+== Q4 借阅 Top10 图书 ==
+{"次数":60,"isbn":"9787532775062","书名":"小王子","分类":"文学"}
+{"次数":60,"isbn":"9787020042033","书名":"红楼梦","分类":"文学"}
+{"次数":60,"isbn":"9787508672069","书名":"全球通史","分类":"历史"}
+{"次数":60,"isbn":"9787521701586","书名":"国富论","分类":"经济管理"}
+{"次数":60,"isbn":"9787544285452","书名":"局外人","分类":"文学"}
+{"次数":60,"isbn":"9787115298428","书名":"费马大定理","分类":"数学"}
+{"次数":60,"isbn":"9787020024759","书名":"边城","分类":"文学"}
+{"次数":60,"isbn":"9787115428004","书名":"Python数据分析","分类":"计算机"}
+{"次数":60,"isbn":"9787115546081","书名":"算法图解","分类":"计算机"}
+{"次数":60,"isbn":"9787040396614","书名":"高等数学（上册）","分类":"数学"}
+== Q5 借阅状态分布 ==
+{"状态":"已归还","笔数":2142,"平均借期":44.6}
+{"状态":"逾期","笔数":429,"平均借期":44.5}
+{"状态":"借出","笔数":429,"平均借期":44.2}
+[exit 0]
+
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/category.js > /data/lib/out/library.category_stats.json; wc -c /data/lib/out/library.category_stats.json; head -6 /data/lib/out/library.category_stats.json
+742 /data/lib/out/library.category_stats.json
+[
+  {
+    "_id": "计算机",
+    "category": "计算机",
+    "count": 15,
+    "avg_price": 89.53,
+[exit 0]
+
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getSiblingDB("library").fs.files.drop(); db.getSiblingDB("library").fs.chunks.drop(); print("fs 集合已清空")'
+fs 集合已清空
+[exit 0]
+
+$ cd /data/lib/tmp/data/gridfs_files && for f in ebook_1.pdf ebook_2.pdf ebook_3.pdf cover_1.png cover_2.png cover_3.png; do mongofiles --port 27017 -d library put $f; done
+2026-11-10T19:33:43.292+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.292+0800	adding gridFile: `ebook_1.pdf`
+
+2026-11-10T19:33:43.293+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.293+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:43.355+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.355+0800	adding gridFile: `ebook_2.pdf`
+
+2026-11-10T19:33:43.355+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.355+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:43.400+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.400+0800	adding gridFile: `ebook_3.pdf`
+
+2026-11-10T19:33:43.403+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.403+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:43.444+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.444+0800	adding gridFile: `cover_1.png`
+
+2026-11-10T19:33:43.445+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.446+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:43.488+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.489+0800	adding gridFile: `cover_2.png`
+
+2026-11-10T19:33:43.489+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.490+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:43.598+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:43.598+0800	adding gridFile: `cover_3.png`
+
+2026-11-10T19:33:43.602+0800	error adding gridFile: could not open upload stream: (Unauthorized) Command find requires authentication
+
+2026-11-10T19:33:43.602+0800	Failed: could not open upload stream: (Unauthorized) Command find requires authentication
+[exit 1]
+
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'db.getSiblingDB("library").fs.files.find({}, {{filename:1, length:1, chunkSize:1, _id:0}}).forEach(f => print(f.filename, f.length, f.chunkSize))'
+SyntaxError: Unexpected token (1:46)
+
+> 1 | db.getSiblingDB("library").fs.files.find({}, {{filename:1, length:1, chunkSize:1, _id:0}}).forEach(f => print(f.filename, f.length, f.chunkSize))
+    |                                               ^
+[exit 1]
+
+$ rm -rf /data/lib/out/gridfs_dl; mkdir -p /data/lib/out/gridfs_dl; cd /data/lib/out/gridfs_dl && for f in ebook_1.pdf ebook_2.pdf ebook_3.pdf cover_1.png cover_2.png cover_3.png; do mongofiles --port 27017 -d library get $f >/dev/null; done; md5sum * | sort -k2
+2026-11-10T19:33:58.181+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.184+0800	Failed: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:58.235+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.237+0800	Failed: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:58.273+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.274+0800	Failed: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:58.319+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.320+0800	Failed: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:58.373+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.375+0800	Failed: (Unauthorized) Command find requires authentication
+2026-11-10T19:33:58.434+0800	connected to: mongodb://localhost:27017/
+2026-11-10T19:33:58.437+0800	Failed: (Unauthorized) Command find requires authentication
+md5sum: '*': 没有那个文件或目录
+[exit 0]
+
+$ cd /data/lib/tmp/data/gridfs_files && md5sum *.pdf *.png | awk '{print $1}' | sort > /tmp/src.txt; cd /data/lib/out/gridfs_dl && md5sum * | awk '{print $1}' | sort > /tmp/dst.txt; diff /tmp/src.txt /tmp/dst.txt && echo 'GridFS 6 个文件 MD5 与源文件逐一一致'
+1,6d0
+< 3536df7adad16f5e9894d6e37f55ebd0
+< 7e44bcff0206b927fbb63cc5340861cd
+< 8e4d140cd5674f7da8d86f6efbfe88fa
+< c86c3991f2b1797d93839034f1a06ba9
+< eb16d7458ed9d95193e1d2f7bfeddec6
+< f818f1a754c2fabfdddf96f86294b9b4
+md5sum: '*': 没有那个文件或目录
+[exit 1]
+
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/role.js
+自定义角色 library_editor 已建立，仅 find/insert/update/remove，不含 dropCollection
+[exit 0]
+
+$ mongosh --port 27017 -u lib_reader -p lib2026pwd --authenticationDatabase library --quiet --eval 'const c=db.getSiblingDB("library").books;try{c.insertOne({isbn:"x"});print("lib_reader 插入成功(不应该)")}catch(e){print("lib_reader 写入被拒绝: "+e.codeName)};print("lib_reader 可读: books="+c.countDocuments())'
+lib_reader 写入被拒绝: Unauthorized
+lib_reader 可读: books=50
+[exit 0]
+
+$ mongosh --port 27017 -u lib_editor -p lib2026pwd --authenticationDatabase library --quiet --eval 'const d=db.getSiblingDB("library");d.perm_probe.insertOne({probe:1,name:"editor"});d.perm_probe.updateOne({probe:1},{$set:{ok:true}});print("lib_editor 增改成功, 条数="+d.perm_probe.countDocuments());d.perm_probe.deleteMany({}); print("lib_editor 删除文档成功, 条数="+d.perm_probe.countDocuments());try{d.perm_probe.drop();print("drop 成功(不应该)")}catch(e){print("lib_editor 删集合被拒绝: "+e.codeName)}'
+lib_editor 增改成功, 条数=1
+lib_editor 删除文档成功, 条数=0
+lib_editor 删集合被拒绝: Unauthorized
+[exit 0]
+
+$ mongosh --port 27017 -u lib_admin -p lib2026pwd --authenticationDatabase library --quiet --eval 'const d=db.getSiblingDB("library"); d.perm_probe.drop();print("lib_admin 删集合成功, 现有集合: "+d.getCollectionNames().sort().join(","))'
+lib_admin 删集合成功, 现有集合: books,borrow_logs,readers
+[exit 0]
+
+$ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");["books","readers","borrow_logs"].forEach(c=>print(c,d[c].countDocuments()));print("fs.files", d.fs.files.countDocuments(), "| fs.chunks", d.fs.chunks.countDocuments())'
+books 50
+readers 30
+borrow_logs 3000
+fs.files 0 | fs.chunks 0
+[exit 0]

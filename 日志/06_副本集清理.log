@@ -1,0 +1,24 @@
+===== nosql01 (192.168.121.134) =====
+-- 剩余 mongod 进程 --
+    PID     ELAPSED CMD
+    905       21:38 /usr/bin/mongod -f /etc/mongod.conf
+   3676       09:17 mongod --config /data/lib/conf/standalone-auth.conf
+-- 清理数据目录 --
+-- 端口占用检查 --
+LISTEN 0      4096         0.0.0.0:27017      0.0.0.0:*    users:(("mongod",pid=3676,fd=10))
+
+===== nosql02 (192.168.121.135) =====
+-- 剩余 mongod 进程 --
+    PID     ELAPSED CMD
+    971       21:33 /usr/bin/mongod -f /etc/mongod.conf
+-- 清理数据目录 --
+-- 端口占用检查 --
+27017-27024 全部空闲
+
+===== nosql03 (192.168.121.136) =====
+-- 剩余 mongod 进程 --
+    PID     ELAPSED CMD
+    900       21:42 /usr/bin/mongod -f /etc/mongod.conf
+-- 清理数据目录 --
+-- 端口占用检查 --
+27017-27024 全部空闲

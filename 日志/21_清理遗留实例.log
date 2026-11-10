@@ -1,0 +1,67 @@
+[nosql01] $ systemctl disable --now mongod; sleep 1; systemctl is-active mongod; cp -a /etc/mongod.conf /data/lib/tmp/legacy_mongod.conf.bak 2>/dev/null; rm -f /etc/mongod.conf; du -sh /var/lib/mongo 2>/dev/null; rm -rf /var/lib/mongo; echo '遗留数据目录已删除'; ss -lntp | grep 27016 || echo '27016 端口已释放'
+inactive
+204M	/var/lib/mongo
+遗留数据目录已删除
+27016 端口已释放
+Removed '/etc/systemd/system/multi-user.target.wants/mongod.service'.
+[exit 0]
+
+[nosql02] $ systemctl disable --now mongod; sleep 1; systemctl is-active mongod; cp -a /etc/mongod.conf /data/lib/tmp/legacy_mongod.conf.bak 2>/dev/null; rm -f /etc/mongod.conf; du -sh /var/lib/mongo 2>/dev/null; rm -rf /var/lib/mongo; echo '遗留数据目录已删除'; ss -lntp | grep 27016 || echo '27016 端口已释放'
+inactive
+205M	/var/lib/mongo
+遗留数据目录已删除
+27016 端口已释放
+Removed '/etc/systemd/system/multi-user.target.wants/mongod.service'.
+[exit 0]
+
+[nosql03] $ systemctl disable --now mongod; sleep 1; systemctl is-active mongod; cp -a /etc/mongod.conf /data/lib/tmp/legacy_mongod.conf.bak 2>/dev/null; rm -f /etc/mongod.conf; du -sh /var/lib/mongo 2>/dev/null; rm -rf /var/lib/mongo; echo '遗留数据目录已删除'; ss -lntp | grep 27016 || echo '27016 端口已释放'
+inactive
+204M	/var/lib/mongo
+遗留数据目录已删除
+27016 端口已释放
+Removed '/etc/systemd/system/multi-user.target.wants/mongod.service'.
+[exit 0]
+
+[nosql01] $ mongosh --port 27020 --quiet /data/lib/tmp/shard_probe_user.js
+shard_probe 已建
+[exit 0]
+
+[nosql01] $ mongosh --port 27020 -u shard_probe -p probe2026 --authenticationDatabase admin --quiet /data/lib/tmp/shard_count.js
+MongoServerError: not authorized on admin to execute command { hostInfo: 1, lsid: { id: UUID("9ae22a5b-8773-4369-b67b-9b7643d16dc7") }, $clusterTime: { clusterTime: Timestamp(1794312431, 1), signature: { hash: BinData(0, 7D40C32979D510AE235D8EC093D6227A4FB62E9E), keyId: 7706508975113502743 } }, $readPreference: { mode: "primaryPreferred" }, $db: "admin" }
+[exit 1]
+
+[nosql03] $ mongosh --port 27021 --quiet /data/lib/tmp/shard_probe_user.js
+shard_probe 已建
+[exit 0]
+
+[nosql03] $ mongosh --port 27021 -u shard_probe -p probe2026 --authenticationDatabase admin --quiet /data/lib/tmp/shard_count.js
+MongoServerError: not authorized on admin to execute command { hostInfo: 1, lsid: { id: UUID("22efbb94-5aca-41d5-ba91-6a38ebd64a58") }, $clusterTime: { clusterTime: Timestamp(1794312439, 1), signature: { hash: BinData(0, 3336E59E59897AEE7D4D3D105B8E840498A321F0), keyId: 7706508975113502743 } }, $readPreference: { mode: "primaryPreferred" }, $db: "admin" }
+[exit 1]
+
+[nosql01] $ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --quiet /data/lib/tmp/perf_cmp.js
+无索引 + 全表扫描 (status=逾期): 返回 429 条 | 扫描文档 3000 | 扫描索引项 0 | 耗时 4 ms
+走 idx_status  (status=逾期): 返回 429 条 | 扫描文档 429 | 扫描索引项 429 | 耗时 3 ms
+无索引 + 全表扫描 (book_isbn): 返回 60 条 | 扫描文档 3000 | 扫描索引项 0 | 耗时 3 ms
+走 idx_book_isbn: 返回 60 条 | 扫描文档 60 | 扫描索引项 60 | 耗时 3 ms
+[exit 0]
+
+[nosql01] $ ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27017
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27020
+0.0.0.0:27022
+[exit 0]
+
+[nosql02] $ ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27020
+0.0.0.0:27021
+[exit 0]
+
+[nosql03] $ ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27021
+[exit 0]

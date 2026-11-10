@@ -1,0 +1,15 @@
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");const r=d.books.deleteMany({isbn:"failover-probe"});print("已删探针 " + r.deletedCount + " 条，books=" + d.books.countDocuments())'
+已删探针 1 条，books=50
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print(db.hello().me+" "+(db.hello().isWritablePrimary?"PRIMARY":"SECONDARY")+" books="+d.books.countDocuments()+" readers="+d.readers.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments())'
+nosql01:27018 PRIMARY books=50 readers=30 borrow_logs=3000
+[exit 0]
+
+[nosql02] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print(db.hello().me+" "+(db.hello().isWritablePrimary?"PRIMARY":"SECONDARY")+" books="+d.books.countDocuments()+" readers="+d.readers.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments())'
+nosql02:27018 SECONDARY books=50 readers=30 borrow_logs=3000
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print(db.hello().me+" "+(db.hello().isWritablePrimary?"PRIMARY":"SECONDARY")+" books="+d.books.countDocuments()+" readers="+d.readers.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments())'
+nosql03:27018 SECONDARY books=50 readers=30 borrow_logs=3000
+[exit 0]

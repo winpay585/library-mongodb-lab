@@ -1,0 +1,192 @@
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_chunks.js
+borrow_logs 块分布: [{"_id":"shard1","n":8}]
+books 块分布: [{"_id":"shard1","n":2}]
+均衡器状态: true
+
+>>> 3 分钟内均衡器未迁移数据块
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_dist.js
+getShardDistribution(borrow_logs) = {"Shard shard1 at shard1rs/nosql01:27020,nosql02:27020":{"data":"582KiB","docs":3000,"chunks":8,"estimated data per chunk":"72KiB","estimated docs per chunk":375},"Totals":{"data":"582KiB","docs":3000,"chunks":8,"Shard shard1":["100 % data","100 % docs in cluster","198B avg obj size on shard"]}}
+getShardDistribution(books) = {"Shard shard1 at shard1rs/nosql01:27020,nosql02:27020":{"data":"19KiB","docs":50,"chunks":2,"estimated data per chunk":"9KiB","estimated docs per chunk":25},"Totals":{"data":"19KiB","docs":50,"chunks":2,"Shard shard1":["100 % data","100 % docs in cluster","395B avg obj size on shard"]}}
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_route.js
+① 按分片键 reader_card=R20240001 → shard1
+② 不按分片键 status=逾期       → shard1
+③ 按分片键 isbn=9787115428028 → shard1
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/b_per.js
+总文档 borrow_logs=3000 books=50

@@ -1,0 +1,26 @@
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_shard.js
+borrow_logs: InvalidOptions
+books: InvalidOptions
+分片集合：[]
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_split.js
+MongoServerError: Expected collection library.borrow_logs to be sharded
+[exit 1]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_dist.js
+== borrow_logs 分片分布 ==
+MongoshInvalidInputError: [SHAPI-10001] Collection borrow_logs is not sharded
+[exit 1]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_route.js
+== 按分片键查询的路由 ==
+[{"explainVersion":"1","shardName":"shard1","connectionString":"shard1rs/nosql01:27020,nosql02:27020","serverInfo":{"host":"nosql01","port":27020,"version":"8.0.34","gitVersion":"51db4515a6597aedcf6188ee4e48a27e65b065ae"},"namespace":"library.borrow_logs","parsedQuery":{"reader_card":{"$eq":"R20240001"}},"indexFilterSet":false,"queryHash":"4E642ED1","planCacheShapeHash":"4E642ED1","planCacheKey":"0C663205","optimizationTimeMillis":0,"maxIndexedOrSolutionsReached":false,"maxIndexedAndSolutionsReached":false,"maxScansToExplodeReached":false,"prunedSimilarIndexes":false,"winningPlan":{"isCached":false,"stage":"COLLSCAN","filter":{"reader_card":{"$eq":"R20240001"}},"direction":"forward"},"rejectedPlans":[]}]
+== 不按分片键查询（广播） ==
+[{"explainVersion":"1","shardName":"shard1","connectionString":"shard1rs/nosql01:27020,nosql02:27020","serverInfo":{"host":"nosql01","port":27020,"version":"8.0.34","gitVersion":"51db4515a6597aedcf6188ee4e48a27e65b065ae"},"namespace":"library.borrow_logs","parsedQuery":{"status":{"$eq":"逾期"}},"indexFilterSet":false,"queryHash":"5D6543D9","planCacheShapeHash":"5D6543D9","planCacheKey":"405CB45D","optimizationTimeMillis":0,"maxIndexedOrSolutionsReached":false,"maxIndexedAndSolutionsReached":false,"maxScansToExplodeReached":false,"prunedSimilarIndexes":false,"winningPlan":{"isCached":false,"stage":"COLLSCAN","filter":{"status":{"$eq":"逾期"}},"direction":"forward"},"rejectedPlans":[]}]
+[exit 0]
+
+$ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/sh_status.js
+分片：shard1 => shard1rs/nosql01:27020,nosql02:27020 ; shard2 => shard2rs/nosql02:27021,nosql03:27021
+library 主分片：shard1
+[exit 0]

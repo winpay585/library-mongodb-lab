@@ -1,0 +1,68 @@
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/rs_users.js
+lib_admin 已创建
+lib_editor 已创建
+lib_reader 已创建
+当前账号：lib_admin, lib_editor, lib_reader
+[exit 0]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection books --file /data/lib/tmp/data/books.txt --jsonArray --drop
+2026-11-10T19:47:13.471+0800	connected to: mongodb://localhost:27018/
+2026-11-10T19:47:13.473+0800	dropping: `library.books`
+2026-11-10T19:47:13.534+0800	50 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection readers --file /data/lib/tmp/data/readers.txt --jsonArray --drop
+2026-11-10T19:47:13.981+0800	connected to: mongodb://localhost:27018/
+2026-11-10T19:47:13.983+0800	dropping: `library.readers`
+2026-11-10T19:47:14.052+0800	30 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongoimport --port 27018 -u lib_admin -p lib2026pwd --authenticationDatabase library --db library --collection borrow_logs --file /data/lib/tmp/data/borrow_logs.txt --jsonArray --drop
+2026-11-10T19:47:14.529+0800	connected to: mongodb://localhost:27018/
+2026-11-10T19:47:14.530+0800	dropping: `library.borrow_logs`
+2026-11-10T19:47:14.812+0800	3000 document(s) imported successfully. 0 document(s) failed to import.
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/rs_check.js
+本节点 nosql01:27018 角色 PRIMARY
+  books=50
+  readers=30
+  borrow_logs=3000
+  books 索引=1  borrow_logs 索引=1
+[exit 0]
+
+[nosql02] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/rs_check.js
+本节点 nosql02:27018 角色 SECONDARY
+  books=50
+  readers=30
+  borrow_logs=3000
+  books 索引=1  borrow_logs 索引=1
+[exit 0]
+
+[nosql03] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/rs_check.js
+本节点 nosql03:27018 角色 SECONDARY
+  books=50
+  readers=30
+  borrow_logs=3000
+  books 索引=1  borrow_logs 索引=1
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 PRIMARY 1
+nosql02:27018 SECONDARY 1
+nosql03:27018 SECONDARY 1
+[exit 0]
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.printSecondaryReplicationInfo()'
+source: nosql02:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:47:26 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+---
+source: nosql03:27018
+{
+  syncedTo: 'Tue Nov 10 2026 19:47:26 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+[exit 0]

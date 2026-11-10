@@ -1,0 +1,111 @@
+[nosql01] $ rm -rf /data/lib/cfg1; mkdir -p /data/lib/cfg1; mongod --config /data/lib/conf/cfg1.conf || tail -n 15 /data/lib/log/cfg1.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 8432
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql02] $ rm -rf /data/lib/cfg2; mkdir -p /data/lib/cfg2; mongod --config /data/lib/conf/cfg2.conf || tail -n 15 /data/lib/log/cfg2.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 3831
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql03] $ rm -rf /data/lib/cfg3; mkdir -p /data/lib/cfg3; mongod --config /data/lib/conf/cfg3.conf || tail -n 15 /data/lib/log/cfg3.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 3986
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql01] $ ss -lntp | grep 27019
+LISTEN 0      4096         0.0.0.0:27019      0.0.0.0:*    users:(("mongod",pid=8432,fd=10))
+[exit 0]
+
+[nosql02] $ ss -lntp | grep 27019
+LISTEN 0      4096         0.0.0.0:27019      0.0.0.0:*    users:(("mongod",pid=3831,fd=10))
+[exit 0]
+
+[nosql03] $ ss -lntp | grep 27019
+LISTEN 0      4096         0.0.0.0:27019      0.0.0.0:*    users:(("mongod",pid=3986,fd=10))
+[exit 0]
+
+[nosql01] $ mongosh --port 27019 --quiet --eval "rs.initiate({_id:'cfgrs',configsvr:true,members:[{_id:0,host:'nosql01:27019'},{_id:1,host:'nosql02:27019'},{_id:2,host:'nosql03:27019'}]})"
+{ ok: 1 }
+[exit 0]
+
+[nosql01] $ mongosh --port 27019 --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27019 SECONDARY 1
+nosql02:27019 SECONDARY 1
+nosql03:27019 SECONDARY 1
+[exit 0]
+
+[nosql01] $ rm -rf /data/lib/shard1; mkdir -p /data/lib/shard1; mongod --config /data/lib/conf/shard1.conf || tail -n 15 /data/lib/log/shard1.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 8787
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql02] $ rm -rf /data/lib/shard1; mkdir -p /data/lib/shard1; mongod --config /data/lib/conf/shard1.conf || tail -n 15 /data/lib/log/shard1.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 4087
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql02] $ rm -rf /data/lib/shard2; mkdir -p /data/lib/shard2; mongod --config /data/lib/conf/shard2.conf || tail -n 15 /data/lib/log/shard2.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 4196
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql03] $ rm -rf /data/lib/shard2; mkdir -p /data/lib/shard2; mongod --config /data/lib/conf/shard2.conf || tail -n 15 /data/lib/log/shard2.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 4207
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql01] $ ss -lntp | grep 27020
+LISTEN 0      4096         0.0.0.0:27020      0.0.0.0:*    users:(("mongod",pid=8787,fd=10))
+[exit 0]
+
+[nosql02] $ ss -lntp | grep 27020
+LISTEN 0      4096         0.0.0.0:27020      0.0.0.0:*    users:(("mongod",pid=4087,fd=10))
+[exit 0]
+
+[nosql02] $ ss -lntp | grep 27021
+LISTEN 0      4096         0.0.0.0:27021      0.0.0.0:*    users:(("mongod",pid=4196,fd=10))
+[exit 0]
+
+[nosql03] $ ss -lntp | grep 27021
+LISTEN 0      4096         0.0.0.0:27021      0.0.0.0:*    users:(("mongod",pid=4207,fd=10))
+[exit 0]
+
+[nosql01] $ mongosh --port 27020 --quiet --eval "rs.initiate({_id:'shard1rs',members:[{_id:0,host:'nosql01:27020',priority:2},{_id:1,host:'nosql02:27020',priority:1}]})"
+{ ok: 1 }
+[exit 0]
+
+[nosql03] $ mongosh --port 27021 --quiet --eval "rs.initiate({_id:'shard2rs',members:[{_id:0,host:'nosql03:27021',priority:2},{_id:1,host:'nosql02:27021',priority:1}]})"
+{ ok: 1 }
+[exit 0]
+
+[nosql01] $ mongosh --port 27020 --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr))'
+nosql01:27020 PRIMARY
+nosql02:27020 SECONDARY
+[exit 0]
+
+[nosql03] $ mongosh --port 27021 --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr))'
+nosql03:27021 PRIMARY
+nosql02:27021 SECONDARY
+[exit 0]
+
+[nosql01] $ mongos --config /data/lib/conf/mongos.conf || tail -n 15 /data/lib/log/mongos.log
+about to fork child process, waiting until server is ready for connections.
+forked process: 9090
+child process started successfully, parent exiting
+[exit 0]
+
+[nosql01] $ ss -lntp | grep 27022
+LISTEN 0      4096         0.0.0.0:27022      0.0.0.0:*    users:(("mongos",pid=9090,fd=10))
+[exit 0]
+
+[nosql01] $ mongosh --port 27022 --quiet --eval 'db.adminCommand({listShards:1})'
+MongoServerError: not authorized on admin to execute command { listShards: 1, lsid: { id: UUID("f6d84471-9242-4d79-ba12-bca972562b5b") }, $clusterTime: { clusterTime: Timestamp(1794311495, 1), signature: { hash: BinData(0, CDF53A0C36EFFBE9A4BD288FFE9F83E6FE3A3FD3), keyId: 7706508975113502743 } }, $db: "admin" }
+[exit 1]

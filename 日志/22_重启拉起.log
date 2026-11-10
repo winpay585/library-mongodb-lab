@@ -1,0 +1,37 @@
+[nosql01] $ bash /tmp/boot_instances.sh 2>&1
+standalone-auth (27017) 已在运行，跳过
+rs1 (27018) 已在运行，跳过
+cfg1 (27019) 已在运行，跳过
+shard1 (27020) 启动
+
+[nosql02] $ bash /tmp/boot_instances.sh 2>&1
+rs2 (27018) 启动
+cfg2 (27019) 启动
+shard1 (27020) 启动
+shard2 (27021) 启动
+
+[nosql03] $ bash /tmp/boot_instances.sh 2>&1
+rs3 (27018) 启动
+cfg3 (27019) 启动
+shard2 (27021) 启动
+
+[nosql01] $ bash /tmp/boot_mongos.sh 2>&1
+mongos 启动
+
+[nosql01] $ ss -lnt | grep -E ':270(17|18|19|20|21|22) ' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27017
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27020
+0.0.0.0:27022
+
+[nosql02] $ ss -lnt | grep -E ':270(17|18|19|20|21|22) ' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27020
+0.0.0.0:27021
+
+[nosql03] $ ss -lnt | grep -E ':270(17|18|19|20|21|22) ' | awk '{print $4}' | sort -t: -k2 -n
+0.0.0.0:27018
+0.0.0.0:27019
+0.0.0.0:27021

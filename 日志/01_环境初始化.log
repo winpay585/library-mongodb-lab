@@ -1,0 +1,21 @@
+===== nosql01 (192.168.121.134) =====
+  (0, 'nosql01')
+  (0, '192.168.121.134 nosql01\n192.168.121.135 nosql02\n192.168.121.136 nosql03')
+  (0, '/data/lib/cfg1\n/data/lib/cfg2\n/data/lib/cfg3\n/data/lib/conf\n/data/lib/key\n/data/lib/log\n/data/lib/out\n/data/lib/rs1\n/data/lib/rs2\n/data/lib/rs3\n/data/lib/shard1\n/data/lib/shard2\n/data/lib/standalone\n/data/lib/tmp')
+  (0, '-r--------. 1 root root 64 11月10日 19:29 /data/lib/key/mongo.key')
+  (0, 'Enforcing')
+  (0, 'LISTEN 0      4096       127.0.0.1:27016      0.0.0.0:*    users:(("mongod",pid=905,fd=9))')
+===== nosql02 (192.168.121.135) =====
+  (0, 'nosql02')
+  (0, '192.168.121.134 nosql01\n192.168.121.135 nosql02\n192.168.121.136 nosql03')
+  (0, '/data/lib/cfg1\n/data/lib/cfg2\n/data/lib/cfg3\n/data/lib/conf\n/data/lib/key\n/data/lib/log\n/data/lib/out\n/data/lib/rs1\n/data/lib/rs2\n/data/lib/rs3\n/data/lib/shard1\n/data/lib/shard2\n/data/lib/standalone\n/data/lib/tmp')
+  (0, '-r--------. 1 root root 64 11月10日 19:29 /data/lib/key/mongo.key')
+  (0, 'Enforcing')
+  (0, 'LISTEN 0      4096       127.0.0.1:27016      0.0.0.0:*    users:(("mongod",pid=971,fd=9))')
+===== nosql03 (192.168.121.136) =====
+  (0, 'nosql03')
+  (0, '192.168.121.134 nosql01\n192.168.121.135 nosql02\n192.168.121.136 nosql03')
+  (0, '/data/lib/cfg1\n/data/lib/cfg2\n/data/lib/cfg3\n/data/lib/conf\n/data/lib/key\n/data/lib/log\n/data/lib/out\n/data/lib/rs1\n/data/lib/rs2\n/data/lib/rs3\n/data/lib/shard1\n/data/lib/shard2\n/data/lib/standalone\n/data/lib/tmp')
+  (0, '-r--------. 1 root root 64 11月10日 19:29 /data/lib/key/mongo.key')
+  (0, 'Enforcing')
+  (0, 'LISTEN 0      4096       127.0.0.1:27016      0.0.0.0:*    users:(("mongod",pid=900,fd=9))')

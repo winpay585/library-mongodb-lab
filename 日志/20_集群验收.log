@@ -1,0 +1,96 @@
+[nosql01] $ hostname; hostname -I | awk '{print $1}'; grep PRETTY_NAME /etc/os-release; uname -r; free -g | awk '/Mem/{print "内存 " $2 " GB"}'; ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4, $6}' | sort -t: -k2 -n
+nosql01
+192.168.121.134
+PRETTY_NAME="CentOS Stream 10 (Coughlan)"
+6.12.0-269.el10.x86_64
+内存 3 GB
+0.0.0.0:27017 users:(("mongod",pid=1917,fd=10))
+0.0.0.0:27018 users:(("mongod",pid=2013,fd=10))
+0.0.0.0:27019 users:(("mongod",pid=2141,fd=10))
+0.0.0.0:27020 users:(("mongod",pid=2291,fd=10))
+0.0.0.0:27022 users:(("mongos",pid=2692,fd=10))
+
+[nosql02] $ hostname; hostname -I | awk '{print $1}'; grep PRETTY_NAME /etc/os-release; uname -r; free -g | awk '/Mem/{print "内存 " $2 " GB"}'; ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4, $6}' | sort -t: -k2 -n
+nosql02
+192.168.121.135
+PRETTY_NAME="CentOS Stream 10 (Coughlan)"
+6.12.0-269.el10.x86_64
+内存 3 GB
+0.0.0.0:27018 users:(("mongod",pid=1957,fd=10))
+0.0.0.0:27019 users:(("mongod",pid=1973,fd=10))
+0.0.0.0:27020 users:(("mongod",pid=1990,fd=10))
+0.0.0.0:27021 users:(("mongod",pid=2009,fd=10))
+
+[nosql03] $ hostname; hostname -I | awk '{print $1}'; grep PRETTY_NAME /etc/os-release; uname -r; free -g | awk '/Mem/{print "内存 " $2 " GB"}'; ss -lntp | grep -E ':(2701[6-9]|2702[0-2])' | awk '{print $4, $6}' | sort -t: -k2 -n
+nosql03
+192.168.121.136
+PRETTY_NAME="CentOS Stream 10 (Coughlan)"
+6.12.0-269.el10.x86_64
+内存 3 GB
+0.0.0.0:27018 users:(("mongod",pid=1954,fd=10))
+0.0.0.0:27019 users:(("mongod",pid=1962,fd=10))
+0.0.0.0:27021 users:(("mongod",pid=1984,fd=10))
+
+[nosql01] $ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const d=db.getSiblingDB("library");print("单机 books="+d.books.countDocuments()+" readers="+d.readers.countDocuments()+" borrow_logs="+d.borrow_logs.countDocuments()+" fs.files="+d.fs.files.countDocuments()+" fs.chunks="+d.fs.chunks.countDocuments());print("索引: books="+d.books.getIndexes().length+" readers="+d.readers.getIndexes().length+" borrow_logs="+d.borrow_logs.getIndexes().length)'
+单机 books=50 readers=30 borrow_logs=3000 fs.files=6 fs.chunks=6
+索引: books=5 readers=4 borrow_logs=6
+
+[nosql01] $ mongosh --port 27017 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --quiet --eval 'const d=db.getSiblingDB("library");["books","readers","borrow_logs"].forEach(c => print(c + ": " + d[c].getIndexes().map(i => i.name).join(", ")));'
+books: _id_, uk_isbn, idx_category, idx_title_text, idx_cat_isbn
+readers: _id_, uk_card_no, idx_college, idx_college_card
+borrow_logs: _id_, idx_card_hashed, idx_book_isbn, idx_date_desc, idx_isbn_date, idx_status
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.status().members.forEach(m => print(m.name, m.stateStr, m.health))'
+nosql01:27018 PRIMARY 1
+nosql02:27018 SECONDARY 1
+nosql03:27018 SECONDARY 1
+
+[nosql01] $ mongosh --port 27018 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'rs.printSecondaryReplicationInfo()'
+source: nosql02:27018
+{
+  syncedTo: 'Tue Nov 10 2026 20:41:39 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+---
+source: nosql03:27018
+{
+  syncedTo: 'Tue Nov 10 2026 20:41:39 GMT+0800 (中国标准时间)',
+  replLag: '0 secs (0 hrs) behind the primary '
+}
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/v_dist.js
+borrow_logs 块分布: [{"_id":"shard2","n":1},{"_id":"shard1","n":1}]
+books 块分布: [{"_id":"shard1","n":1},{"_id":"shard2","n":1}]
+borrow_logs getShardDistribution: {"Shard shard2 at shard2rs/nosql03:27021,nosql02:27021":{"data":"329KiB","docs":1700,"chunks":1,"estimated data per chunk":"329KiB","estimated docs per chunk":1700},"Shard shard1 at shard1rs/nosql01:27020,nosql02:27020":{"data":"252KiB","docs":1300,"chunks":1,"estimated data per chunk":"252KiB","estimated docs per chunk":1300},"Totals":{"data":"582KiB","docs":3000,"chunks":2,"Shard shard2":["56.65 % data","56.66 % docs in cluster","198B avg obj size on shard"],"Shard shard1":["43.34 % data","43.33 % docs in cluster","198B avg obj size on shard"]}}
+books getShardDistribution: {"Shard shard2 at shard2rs/nosql03:27021,nosql02:27021":{"data":"11KiB","docs":29,"chunks":1,"estimated data per chunk":"11KiB","estimated docs per chunk":29},"Shard shard1 at shard1rs/nosql01:27020,nosql02:27020":{"data":"8KiB","docs":21,"chunks":1,"estimated data per chunk":"8KiB","estimated docs per chunk":21},"Totals":{"data":"19KiB","docs":50,"chunks":2,"Shard shard2":["57.64 % data","58 % docs in cluster","393B avg obj size on shard"],"Shard shard1":["42.35 % data","42 % docs in cluster","398B avg obj size on shard"]}}
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/v_route.js
+① 带分片键 reader_card=R20240001 → shard1
+② 不带分片键 status=逾期        → shard1,shard2
+③ 带分片键 isbn=9787115428028  → shard1
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet --eval 'const s=db.adminCommand({listShards:1}); s.shards.forEach(x=>print(x._id, x.host))'
+shard1 shard1rs/nosql01:27020,nosql02:27020
+shard2 shard2rs/nosql03:27021,nosql02:27021
+
+[nosql01] $ mongosh --port 27022 -u platform_admin -p Admin2026pwd --authenticationDatabase admin --quiet /data/lib/tmp/v_perf.js
+走 idx_book_isbn（借阅日志按 ISBN 查）: 返回 60 条, 扫描文档 60, 扫描索引项 60, 耗时 40 ms
+走 idx_card_hashed（按借阅证查）: 返回 100 条, 扫描文档 100, 扫描索引项 100, 耗时 3 ms
+
+[nosql01] $ ps -o pid,etime,cmd -C mongod,mongos | grep -v PID | sed 's/  */ /g'
+1917 05:58 mongod -f /data/lib/conf/standalone-auth.conf
+ 2013 05:50 mongod -f /data/lib/conf/rs1.conf
+ 2141 05:44 mongod -f /data/lib/conf/cfg1.conf
+ 2291 05:37 mongod -f /data/lib/conf/shard1.conf
+ 2692 01:17 mongos -f /data/lib/conf/mongos.conf
+
+[nosql02] $ ps -o pid,etime,cmd -C mongod,mongos | grep -v PID | sed 's/  */ /g'
+1957 01:36 mongod -f /data/lib/conf/rs2.conf
+ 1973 01:35 mongod -f /data/lib/conf/cfg2.conf
+ 1990 01:33 mongod -f /data/lib/conf/shard1.conf
+ 2009 01:30 mongod -f /data/lib/conf/shard2.conf
+
+[nosql03] $ ps -o pid,etime,cmd -C mongod,mongos | grep -v PID | sed 's/  */ /g'
+1954 01:25 mongod -f /data/lib/conf/rs3.conf
+ 1962 01:24 mongod -f /data/lib/conf/cfg3.conf
+ 1984 01:22 mongod -f /data/lib/conf/shard2.conf
