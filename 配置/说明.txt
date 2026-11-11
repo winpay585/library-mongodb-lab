@@ -9,3 +9,16 @@ hosts      192.168.121.134 nosql01
            cfg1 cfg2 cfg3（配置服务器）、shard1 shard2（分片）
 keyfile    /data/lib/key/mongo.key，64 个十六进制字符，三台一致，权限 400
 其他       关掉 firewalld，SELinux 设为 permissive
+
+配置文件按机器分目录放，内容和三台机器上实际跑的一致，直接拷过去就能起：
+
+  nosql01/  cfg1.conf  rs1.conf  shard1.conf  standalone-auth.conf  mongos.conf
+  nosql02/  cfg2.conf  rs2.conf  shard1.conf  shard2.conf
+  nosql03/  cfg3.conf  rs3.conf  shard2.conf
+  27016/    mongod.conf（放在 /export/servers/standalone/mongod.conf）
+
+同目录下的 standalone.conf 与 standalone-auth.conf 都占 27017，是单机开认证前后
+两份；实际起的是 standalone-auth.conf，另一份留作对照，不要同时起。
+
+放到位之后，三台各执行一次 脚本/00_启动实例.sh 即可，脚本会跳过已经在监听的实例；
+停的时候三台各执行一次 脚本/00_停止实例.sh。

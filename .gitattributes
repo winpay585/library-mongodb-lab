@@ -1,0 +1,10 @@
+# 脚本和配置在 Linux 上跑，统一用 LF 换行
+*.sh   text eol=lf
+*.js   text eol=lf
+*.conf text eol=lf
+*.txt  text eol=lf
+*.ini  text eol=lf
+*.md   text eol=lf
+*.docx binary
+*.pdf  binary
+*.png  binary
