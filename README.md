@@ -17,6 +17,7 @@
 ## 二、目录
 
 - 文档/    技术文档，Word 和 PDF 各一份
+- 程序/    Python 程序（pymongo 连库，做检索、统计与电子书存取）
 - 脚本/    数据库这一层的脚本：建索引、统计查询、账号权限、GridFS、副本集、分片、验收
 - 配置/    三台机器的主机名、hosts、目录划分、keyfile 做法
 - 截图/    运行截图
@@ -28,7 +29,13 @@
 三台机器：nosql01 192.168.121.134、nosql02 192.168.121.135、nosql03 192.168.121.136，
 4 GB 内存 / 2 核，MongoDB 8.0.34。
 
-端口分配：27017 单机，27018 副本集，27019 配置服务器，27020 与 27021 两组分片，27022 mongos。
+端口分配：27016 课件口径的独立单机实例，27017 单机，27018 副本集，27019 配置服务器，
+27020 与 27021 两组分片，27022 mongos。
+
+27016 这个实例是按第 3 章课件的写法单独建的：安装目录 `/export/servers/mongodb-8.3.8`、
+数据目录 `/export/servers/standalone/dbs`、日志 `/export/servers/standalone/log/mongodb.log`、
+配置文件 `/export/servers/standalone/mongod.conf`、账号 `itcastAdmin/123456`（admin 库，root 角色），
+开启访问控制。它跟 27017 是两套独立数据目录，互不影响；课件里的命令可以直接在它上面跑通。
 
 ## 四、怎么跑
 
@@ -55,13 +62,35 @@
 每个脚本开头都写了在哪台机器跑、要不要带账号；重复执行不会破坏已有数据。
 01 的 `--drop` 会清空集合，所以它要排在 02 之前。
 
-## 五、账号
+## 五、程序怎么跑
+
+程序在 Windows 本机跑，连虚拟机上的库，默认连 27016 这个课件口径实例。
+
+```bash
+cd 程序
+pip install -r requirements.txt
+python run.py --demo          # 按固定顺序跑 12 项功能，输出可直接截图
+python run.py                 # 菜单模式，13 个功能项按编号选
+python run.py --profile replset   # 换成副本集，连 27018
+```
+
+连接串与账号都写在 `程序/config.ini`：单机用 lib_editor/lib2026pwd（library 库），
+副本集和分片用 platform_admin。换机器只改这个文件。
+
+## 六、账号
 
 platform_admin（admin 库，root 权限）、lib_admin（library 库，dbOwner）、
 lib_editor（library 库，只给增删改查）、lib_reader（library 库，只读）。
 四个账号的密码见脚本 04。
 
-## 六、说明
+27016 实例上另有一套对应的账号：itcastAdmin/123456（admin 库 root）、
+lib_editor 与 lib_reader（library 库，读写与只读）。
 
-桥接模式在这台机器上没打通：改成桥接后 DHCP 拿不到地址，手工配静态地址宿主也 ping 不通，
-查不到 VMnet0 绑到了哪块网卡，最后退回 NAT。这一段过程写在技术文档第九章，没有隐掉。
+## 七、说明
+
+网络按老师给的配置文档走：三台克隆机接在 VMware 的 VMnet8 上，静态地址
+192.168.121.134/135/136，网关 192.168.121.2。前期试过把 VMnet0 改成桥接，
+改完 DHCP 拿不到地址，宿主机也 ping 不通，查下来是 VMnet0 处于自动桥接、
+选中了没有接网线的那块网卡；既然课程环境本来就是 NAT，就按文档的 NAT 方案做。
+这段过程写在技术文档第九章。
+

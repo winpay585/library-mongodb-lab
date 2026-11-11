@@ -1,0 +1,39 @@
+智慧图书馆数字资源平台 · Python 程序说明
+==========================================
+
+一、这是什么
+用 pymongo 连接 MongoDB，对 library 库做图书检索、借阅统计、电子书存取的命令行程序。
+数据在三台虚拟机（nosql01/02/03）上，程序在 Windows 本机运行，通过 192.168.121.x 访问。
+
+二、目录
+run.py            程序入口
+config.ini        连接串与路径配置（换环境只改这里）
+src/libplat/      业务代码：db 连接、图书、读者、借阅、统计、GridFS、日志
+requirements.txt  依赖清单
+
+三、运行前准备
+1. 三台虚拟机开机，mongod 已启动（按 脚本/ 里的部署步骤）
+2. 本机装 Python 3.9 及以上，装依赖：
+   pip install -r requirements.txt
+3. 确认能连上：ping 192.168.121.134
+
+四、怎么跑
+演示模式（固定跑 12 项功能，适合截图）：
+   python run.py --demo
+
+菜单模式（13 个功能项，按编号选）：
+   python run.py
+
+指定部署形态（默认单机 27016）：
+   python run.py --profile replset
+   python run.py --profile shard
+
+五、连接的是哪个实例
+config.ini 里 [standalone] 指向 27016，账号 lib_editor（读写）/ lib_reader（只读）。
+27016 是照课件口径建的：数据目录 /export/servers/standalone/dbs，管理员 itcastAdmin/123456。
+副本集 27018、分片 mongos 27022 用各自段落里的连接串，管理员 platform_admin。
+
+六、常见问题
+- 报 AuthenticationFailed：确认账号与 authSource 对应（itcastAdmin 用 admin，lib_editor 用 library）。
+- 报连接超时：虚拟机没开机，或 VMnet8 网段不是 192.168.121.x。
+- 报 $dateToString 相关错误：数据里的日期是字符串，程序已做类型兼容，若自行改过数据请检查字段类型。
