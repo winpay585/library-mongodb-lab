@@ -1,8 +1,0 @@
-=== NOSQL01
-ens33            UP             fe80::20c:29ff:fe28:39ea/64 
-
-=== NOSQL02
-ens33            UP             fe80::20c:29ff:feb1:8957/64 
-
-=== NOSQL03
-ens33            UP             fe80::20c:29ff:fef9:7487/64 

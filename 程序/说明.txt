@@ -30,7 +30,7 @@ requirements.txt  依赖清单
 
 五、连接的是哪个实例
 config.ini 里 [standalone] 指向 27016，账号 lib_editor（读写）/ lib_reader（只读）。
-27016 是照课件口径建的：数据目录 /export/servers/standalone/dbs，管理员 itcastAdmin/123456。
+27016 是照统一口径建的：数据目录 /export/servers/standalone/dbs，管理员 itcastAdmin/123456。
 副本集 27018、分片 mongos 27022 用各自段落里的连接串，管理员 platform_admin。
 
 六、常见问题
